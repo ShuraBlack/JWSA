@@ -14,16 +14,12 @@
 
 **JWSA** is a Java-based API wrapper designed to interact with the [Warframe Worldstate API](https://docs.warframestat.us/). It provides an elegant, object-oriented interface to access live game data such as alerts, missions, events, and much more.
 
----
-
 ## ✨ Features
 
 - 🔄 Fetch real-time data from the Warframe Worldstate API.
 - 🧱 Object-oriented representation of Warframe’s game data.
 - ⚡ Easy-to-use `request()` methods to retrieve data. (Caches request to reduce calls)
 - 🔍 Support for various game features like alerts, sorties, fissures, syndicates, and more.
-
----
 
 ## 🔧 Installation
 
@@ -40,8 +36,6 @@
 
 3. 📦 Add the generated JAR to your project  
    _(or use the prebuilt release .jar / include the github release)_
-
----
 
 ## 🧪 Usage
 
@@ -81,8 +75,6 @@ public class Main {
 }
 ```
 
----
-
 ## 📚 Key Classes
 
 These classes come with built-in `request()` methods to fetch specific types of data:
@@ -119,8 +111,6 @@ These classes come with built-in `request()` methods to fetch specific types of 
 - `VaultTrader` — Vault trader state
 - `VoidTrader` — Baro Ki'Teer details
 
----
-
 ## 📦 Dependencies
 
 - [Lombok](https://projectlombok.org/) — Reduce boilerplate Java code.
@@ -128,21 +118,15 @@ These classes come with built-in `request()` methods to fetch specific types of 
 - [Log4j2](https://logging.apache.org/log4j/2.x/) — Powerful logging.
 - [SLF4J](http://www.slf4j.org/) — Logging abstraction.
 
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! 🙌  
 Feel free to open issues, request features, or submit pull requests to improve the project.
 
----
-
 ## 📜 License
 
 This project is licensed under the **MIT License**.  
 See the `LICENSE` file for more details.
-
----
 
 ## 🙏 Acknowledgments
 
