@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.planet;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +17,9 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @Getter
-public class CetusStatus {
+public class CetusStatus implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 7609706985791774831L;
 
     /** The unique identifier of the Cetus status. */
     private final String id;
@@ -41,7 +45,7 @@ public class CetusStatus {
      * @param json The JSON object containing the Cetus status details.
      * @return A new CetusStatus instance with the parsed details.
      */
-    public static CetusStatus fromJSON(JSONObject json) {
+    public static CetusStatus deserialize(JSONObject json) {
         String id = json.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(json.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(json.optString("expiry", null));
@@ -50,6 +54,18 @@ public class CetusStatus {
         String timeLeft = json.optString("timeLeft", null);
 
         return new CetusStatus(id, activation, expiry, state, active, timeLeft);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("state", state != null ? state : JSONObject.NULL);
+        json.put("active", active != null ? active : JSONObject.NULL);
+        json.put("timeLeft", timeLeft != null ? timeLeft : JSONObject.NULL);
+        return json;
     }
 
     /**

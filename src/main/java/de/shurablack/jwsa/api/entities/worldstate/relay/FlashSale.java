@@ -1,11 +1,13 @@
 package de.shurablack.jwsa.api.entities.worldstate.relay;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +16,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class FlashSale {
+public class FlashSale implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 4469454051579649584L;
 
     /** The name of the item being sold in the Flash Sale. */
     private final String item;
@@ -43,7 +47,7 @@ public class FlashSale {
      * @param object The JSON object containing the Flash Sale details.
      * @return A new FlashSale instance with the parsed details.
      */
-    public static FlashSale fromJSON(JSONObject object) {
+    public static FlashSale deserialize(JSONObject object) {
         String item = object.optString("item", null);
         boolean expired = object.optBoolean("expired", false);
         String eta = object.optString("eta", null);
@@ -53,6 +57,19 @@ public class FlashSale {
         boolean featured = object.optBoolean("featured", false);
 
         return new FlashSale(item, expired, eta, discount, premiumOverride, popular, featured);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("item", item);
+        json.put("expired", expired);
+        json.put("eta", eta);
+        json.put("discount", discount);
+        json.put("premiumOverride", premiumOverride);
+        json.put("popular", popular);
+        json.put("featured", featured);
+        return json;
     }
 
     /**

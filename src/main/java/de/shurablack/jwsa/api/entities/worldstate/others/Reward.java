@@ -1,10 +1,12 @@
 package de.shurablack.jwsa.api.entities.worldstate.others;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +16,9 @@ import java.util.stream.Collectors;
  */
 @AllArgsConstructor
 @Getter
-public class Reward {
+public class Reward implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 7529932030040067370L;
 
     /** The list of counted items in the reward. */
     private final List<Item> countedItems;
@@ -43,7 +47,7 @@ public class Reward {
      * @param json The JSON object containing the reward details.
      * @return A new Reward instance with the parsed details, or null if the JSON object is null.
      */
-    public static Reward fromJSON(JSONObject json) {
+    public static Reward deserialize(JSONObject json) {
         if (json == null) {
             return null;
         }
@@ -54,7 +58,7 @@ public class Reward {
         if (countedItemsJson != null) {
             for (int i = 0; i < countedItemsJson.length(); i++) {
                 JSONObject itemJson = countedItemsJson.getJSONObject(i);
-                countedItems.add(Item.fromJSON(itemJson));
+                countedItems.add(Item.deserialize(itemJson));
             }
         }
 
@@ -72,12 +76,27 @@ public class Reward {
         return new Reward(countedItems, thumbnail, color, credits, asString, items, itemString);
     }
 
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("countedItems", countedItems.stream().map(Item::serialize).collect(Collectors.toList()));
+        json.put("thumbnail", thumbnail);
+        json.put("color", color);
+        json.put("credits", credits);
+        json.put("asString", asString);
+        json.put("items", items);
+        json.put("itemString", itemString);
+        return json;
+    }
+
     /**
      * Represents an individual item in the reward.
      */
     @AllArgsConstructor
     @Getter
-    public static class Item {
+    public static class Item implements Serializable, IJsonMapping {
+
+        private static final long serialVersionUID = 9216137312012349224L;
 
         /** The type of the item. */
         private final String type;
@@ -91,7 +110,7 @@ public class Reward {
          * @param json The JSON object containing the item details.
          * @return A new Item instance with the parsed details.
          */
-        public static Item fromJSON(JSONObject json) {
+        public static Item deserialize(JSONObject json) {
             if (json == null) {
                 return null;
             }
@@ -101,5 +120,12 @@ public class Reward {
             return new Item(type, count);
         }
 
+        @Override
+        public JSONObject serialize() {
+            JSONObject json = new JSONObject();
+            json.put("type", type != null ? type : JSONObject.NULL);
+            json.put("count", count);
+            return json;
+        }
     }
 }

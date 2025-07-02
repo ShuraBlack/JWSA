@@ -1,10 +1,12 @@
 package de.shurablack.jwsa.api.entities.worldstate.global.sub;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -13,7 +15,9 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @Getter
-public class NightwaveChallenge {
+public class NightwaveChallenge implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 1410942289933434506L;
 
     /** The unique identifier of the Nightwave Challenge. */
     private final String id;
@@ -51,7 +55,7 @@ public class NightwaveChallenge {
      * @param object The JSON object containing the Nightwave Challenge data.
      * @return A NightwaveChallenge object populated with data from the JSON object.
      */
-    public static NightwaveChallenge fromJSON(JSONObject object) {
+    public static NightwaveChallenge deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
@@ -64,5 +68,22 @@ public class NightwaveChallenge {
         Number reputation = object.optNumber("reputation", -1);
 
         return new NightwaveChallenge(id, activation, expiry, startString, active, daily, elite, title, desc, reputation);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("isDaily", daily);
+        json.put("isElite", elite);
+        json.put("title", title != null ? title : JSONObject.NULL);
+        json.put("desc", desc != null ? desc : JSONObject.NULL);
+        json.put("reputation", reputation != null ? reputation : -1);
+
+        return json;
     }
 }

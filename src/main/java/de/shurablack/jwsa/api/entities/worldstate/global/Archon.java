@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.Faction;
 import de.shurablack.jwsa.api.entities.worldstate.others.Mission;
 import de.shurablack.jwsa.api.requests.Paths;
@@ -8,7 +9,9 @@ import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +22,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class Archon {
+public class Archon implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -8254135237592240135L;
 
     /** The unique identifier of the Archon. */
     private final String id;
@@ -60,7 +65,7 @@ public class Archon {
      * @param json The JSON object containing the Archon data.
      * @return An Archon object populated with data from the JSON object.
      */
-    public static Archon fromJSON(org.json.JSONObject json) {
+    public static Archon deserialize(org.json.JSONObject json) {
         String id = json.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(json.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(json.optString("expiry", null));
@@ -71,7 +76,7 @@ public class Archon {
         JSONArray missionsJson = json.optJSONArray("missions");
         for (int i = 0; missionsJson != null && i < missionsJson.length(); i++) {
             org.json.JSONObject missionJson = missionsJson.getJSONObject(i);
-            missions.add(Mission.fromJSON(missionJson));
+            missions.add(Mission.deserialize(missionJson));
         }
         String boss = json.optString("boss", null);
         Faction faction = Faction.fromString(json.optString("faction", null));
@@ -79,6 +84,30 @@ public class Archon {
         String eta = json.optString("eta", null);
 
         return new Archon(id, activation, expiry, startString, active, rewardPool, missions, boss, faction, expired, eta);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("rewardPool", rewardPool != null ? rewardPool : JSONObject.NULL);
+
+        JSONArray missionsJson = new JSONArray();
+        for (Mission mission : missions) {
+            missionsJson.put(mission.serialize());
+        }
+        json.put("missions", missionsJson);
+
+        json.put("boss", boss != null ? boss : JSONObject.NULL);
+        json.put("faction", faction != null ? faction.toString() : JSONObject.NULL);
+        json.put("expired", expired);
+        json.put("eta", eta != null ? eta : JSONObject.NULL);
+
+        return json;
     }
 
     /**

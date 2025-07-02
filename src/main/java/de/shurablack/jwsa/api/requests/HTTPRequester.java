@@ -84,6 +84,9 @@ public class HTTPRequester {
             }
 
             return response.body();
+        } catch (ResponseException e) {
+            LOGGER.error("HTTP request failed for {}: {} (Status Code: {})", url, e.getMessage(), e.getStatusCode());
+            return null;
         } catch (Exception e) {
             LOGGER.error("Error during HTTP request to {}: {}", url, e.getMessage(), e);
             return null;

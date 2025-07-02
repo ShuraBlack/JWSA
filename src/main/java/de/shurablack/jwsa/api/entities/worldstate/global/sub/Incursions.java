@@ -1,10 +1,12 @@
 package de.shurablack.jwsa.api.entities.worldstate.global.sub;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -12,7 +14,9 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @Getter
-public class Incursions {
+public class Incursions implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -8616770259246549454L;
 
     /** The unique identifier of the incursion. */
     private final String id;
@@ -35,7 +39,7 @@ public class Incursions {
      * @param object The JSON object containing the incursion data.
      * @return An Incursions object populated with data from the JSON object.
      */
-    public static Incursions fromJSON(JSONObject object) {
+    public static Incursions deserialize(JSONObject object) {
         if (object == null) {
             return null;
         }
@@ -47,5 +51,16 @@ public class Incursions {
         boolean active = object.optBoolean("active", false);
 
         return new Incursions(id, activation, expiry, startString, active);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject object = new JSONObject();
+        object.put("id", id == null ? JSONObject.NULL : id);
+        object.put("activation", activation == null ? JSONObject.NULL : activation.toString());
+        object.put("expiry", expiry == null ? JSONObject.NULL : expiry.toString());
+        object.put("startString", startString == null ? JSONObject.NULL : startString);
+        object.put("active", active);
+        return object;
     }
 }

@@ -1,9 +1,11 @@
 package de.shurablack.jwsa.api.entities.worldstate.global.sub;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +13,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class Message {
+public class Message implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -7892280704033975109L;
 
     /** The sender of the message. */
     private final String sender;
@@ -34,7 +38,7 @@ public class Message {
      * @param object The JSON object containing the message data.
      * @return A Message object populated with data from the JSON object.
      */
-    public static Message fromJSON(JSONObject object) {
+    public static Message deserialize(JSONObject object) {
         String sender = object.optString("sender", null);
         String subject = object.optString("subject", null);
         String message = object.optString("message", null);
@@ -48,4 +52,15 @@ public class Message {
         return new Message(sender, subject, message, senderIcon, attachments);
     }
 
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("sender", sender != null ? sender : JSONObject.NULL);
+        json.put("subject", subject != null ? subject : JSONObject.NULL);
+        json.put("message", message != null ? message : JSONObject.NULL);
+        json.put("senderIcon", senderIcon != null ? senderIcon : JSONObject.NULL);
+        json.put("attachments", attachments != null ? attachments : List.of());
+
+        return json;
+    }
 }

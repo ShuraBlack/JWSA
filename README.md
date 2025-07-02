@@ -1,5 +1,5 @@
 [Java]: https://img.shields.io/badge/Java-rgb(235%2C%20149%2C%2042)?style=for-the-badge
-[API]: https://img.shields.io/badge/API-Documentation-blue?style=for-the-badge&link=https%3A%2F%2Fdocs.warframestat.us%2F
+[API]: https://img.shields.io/badge/API-Wrapper-blue?style=for-the-badge
 [License]: https://img.shields.io/badge/License-MIT-white?style=for-the-badge
 [Version]: https://img.shields.io/badge/Version-1.0.0-green?style=for-the-badge
 
@@ -16,10 +16,12 @@
 
 ## ✨ Features
 
-- 🔄 Fetch real-time data from the Warframe Worldstate API.
-- 🧱 Object-oriented representation of Warframe’s game data.
-- ⚡ Easy-to-use `request()` methods to retrieve data. (Caches request to reduce calls)
-- 🔍 Support for various game features like alerts, sorties, fissures, syndicates, and more.
+- 🔄 Fetch real-time data from the Warframe Worldstate API
+- 🧱 Object-oriented representation of Warframe’s game data
+- ⚡ Easy-to-use `request()` methods to retrieve data *(Caches requests to reduce calls)*
+  - Be responsible with your API usage. The endpoints do not have a rate limit
+- 💾 Save and load data from local files for offline access *(Java Serializable and Json)*
+- 🔍 Support for various game features like alerts, sorties, fissures, syndicates, and more
 
 ## 🔧 Installation
 
@@ -63,15 +65,23 @@ public class Main {
 ```
 
 ### Example: Fetching Sorties (Direct Object)
+
 ```java
 import de.shurablack.jwsa.api.entities.worldstate.global.Sortie;
+import de.shurablack.jwsa.api.utils.Persistence;
 
 public class Main {
-    public static void main(String[] args) {
-        Sortie sortie = Sortie.request();
-        System.out.println("Sortie Boss: " + sortie.getBoss());
-        System.out.println("Faction: " + sortie.getFaction().getName());
-    }
+   public static void main(String[] args) {
+      Sortie sortie = Sortie.request();
+      System.out.println("Sortie Boss: " + sortie.getBoss());
+      System.out.println("Faction: " + sortie.getFaction().getName());
+
+      // Save sortie data to a JSON file
+      Persistence.jsonMapToFile(sortie, "sortie.json");
+      
+      // Load sortie data from a JSON file
+      Sortie loadedSortie = Sortie.deserialize(Persistence.readJsonFromFile("sortie.json"));
+   }
 }
 ```
 

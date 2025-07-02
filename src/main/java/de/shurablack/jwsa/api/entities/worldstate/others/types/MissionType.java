@@ -3,13 +3,15 @@ package de.shurablack.jwsa.api.entities.worldstate.others.types;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * Represents the various mission types available in the worldstate.
  * Each mission type is associated with a specific name.
  */
 @AllArgsConstructor
 @Getter
-public enum MissionType {
+public enum MissionType implements Serializable {
     /** The Ancient Retribution mission type. */
     ANCIENT_RETRIBUTION("Ancient Retribution"),
     /** The Arena mission type. */
@@ -92,6 +94,8 @@ public enum MissionType {
     CORRUPTION("Corruption"),
     /** An unknown mission type, used as a fallback for unrecognized names. */
     UNKNOWN("Unknown");
+
+    private static final long serialVersionUID = -8720052619629136649L;
 
     /** The name of the mission type. */
     private final String name;

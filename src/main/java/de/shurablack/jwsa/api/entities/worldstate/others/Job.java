@@ -1,10 +1,12 @@
 package de.shurablack.jwsa.api.entities.worldstate.others;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +17,9 @@ import java.util.stream.Collectors;
  */
 @AllArgsConstructor
 @Getter
-public class Job {
+public class Job implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -8464444263470444741L;
 
     /** The activation time of the job. */
     private final LocalDateTime activation;
@@ -44,7 +48,7 @@ public class Job {
      * @param json The JSON object containing the job details.
      * @return A new Job instance with the parsed details.
      */
-    public static Job fromJSON(JSONObject json) {
+    public static Job deserialize(JSONObject json) {
         LocalDateTime activation = ServerOffsetTime.of(json.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(json.optString("expiry", null));
         List<String> rewardPool = json.getJSONArray("rewardPool").toList().stream()
@@ -60,5 +64,18 @@ public class Job {
         Number minMR = json.optNumber("minMR", -1);
 
         return new Job(activation, expiry, rewardPool, type, enemyLevels, standingStages, minMR);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("rewardPool", rewardPool);
+        json.put("type", type);
+        json.put("enemyLevels", enemyLevels);
+        json.put("standingStages", standingStages);
+        json.put("minMR", minMR != null ? minMR : -1);
+        return json;
     }
 }

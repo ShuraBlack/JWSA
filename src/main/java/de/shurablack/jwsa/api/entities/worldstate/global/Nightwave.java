@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.global.sub.NightwaveChallenge;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,9 @@ import java.util.stream.Collectors;
  */
 @AllArgsConstructor
 @Getter
-public class Nightwave {
+public class Nightwave implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 5891060165251363115L;
 
     /** The unique identifier of the Nightwave event. */
     private final String id;
@@ -60,7 +64,7 @@ public class Nightwave {
      * @param object The JSON object containing the Nightwave data.
      * @return A Nightwave object populated with data from the JSON object.
      */
-    public static Nightwave fromJSON(JSONObject object) {
+    public static Nightwave deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
@@ -76,18 +80,46 @@ public class Nightwave {
         List<NightwaveChallenge> possibleChallenges = new ArrayList<>();
         if (object.has("possibleChallenges")) {
             for (Object obj : object.getJSONArray("possibleChallenges")) {
-                possibleChallenges.add(NightwaveChallenge.fromJSON((JSONObject) obj));
+                possibleChallenges.add(NightwaveChallenge.deserialize((JSONObject) obj));
             }
         }
 
         List<NightwaveChallenge> activeChallenges = new ArrayList<>();
         if (object.has("activeChallenges")) {
             for (Object obj : object.getJSONArray("activeChallenges")) {
-                activeChallenges.add(NightwaveChallenge.fromJSON((JSONObject) obj));
+                activeChallenges.add(NightwaveChallenge.deserialize((JSONObject) obj));
             }
         }
 
         return new Nightwave(id, activation, expiry, startString, active, rewardTypes, season, tag, phase, possibleChallenges, activeChallenges);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("rewardTypes", rewardTypes != null ? rewardTypes : new ArrayList<>());
+        json.put("season", season != null ? season : JSONObject.NULL);
+        json.put("tag", tag != null ? tag : JSONObject.NULL);
+        json.put("phase", phase != null ? phase : JSONObject.NULL);
+
+        if (possibleChallenges != null) {
+            json.put("possibleChallenges", possibleChallenges.stream().map(NightwaveChallenge::serialize).collect(Collectors.toList()));
+        } else {
+            json.put("possibleChallenges", new ArrayList<>());
+        }
+
+        if (activeChallenges != null) {
+            json.put("activeChallenges", activeChallenges.stream().map(NightwaveChallenge::serialize).collect(Collectors.toList()));
+        } else {
+            json.put("activeChallenges", new ArrayList<>());
+        }
+
+        return json;
     }
 
     /**
@@ -98,5 +130,4 @@ public class Nightwave {
     public static Nightwave request() {
         return Requests.withDirectMapping(Nightwave.class, Paths.NIGHTWAVE);
     }
-
 }

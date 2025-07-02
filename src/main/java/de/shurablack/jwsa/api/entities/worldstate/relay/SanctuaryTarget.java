@@ -1,10 +1,13 @@
 package de.shurablack.jwsa.api.entities.worldstate.relay;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
+
+import java.io.Serializable;
 
 /**
  * Represents a Sanctuary Target in the worldstate, containing details such as the target name,
@@ -12,7 +15,9 @@ import org.json.JSONObject;
  */
 @AllArgsConstructor
 @Getter
-public class SanctuaryTarget {
+public class SanctuaryTarget implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 604370248067586163L;
 
     /** The name of the Sanctuary Target. */
     private final String target;
@@ -29,12 +34,21 @@ public class SanctuaryTarget {
      * @param object The JSON object containing the Sanctuary Target details.
      * @return A new SanctuaryTarget instance with the parsed details.
      */
-    public static SanctuaryTarget fromJSON(JSONObject object) {
+    public static SanctuaryTarget deserialize(JSONObject object) {
         String target = object.optString("target", null);
         boolean targetActive = object.optBoolean("targetActive", false);
         String asString = object.optString("asString", null);
 
         return new SanctuaryTarget(target, targetActive, asString);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("target", target != null ? target : JSONObject.NULL);
+        json.put("targetActive", targetActive);
+        json.put("asString", asString != null ? asString : JSONObject.NULL);
+        return json;
     }
 
     /**

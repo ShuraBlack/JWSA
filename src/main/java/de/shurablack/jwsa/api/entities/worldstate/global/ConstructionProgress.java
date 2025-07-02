@@ -1,9 +1,13 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.json.JSONObject;
+
+import java.io.Serializable;
 
 /**
  * Represents the construction progress of in-game events, such as Fomorian and Razorback.
@@ -12,7 +16,9 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class ConstructionProgress {
+public class ConstructionProgress implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -5310155051652426558L;
 
     /** The unique identifier of the construction progress entry. */
     private final String id;
@@ -29,12 +35,21 @@ public class ConstructionProgress {
      * @param json The JSON object containing the construction progress data.
      * @return A ConstructionProgress object populated with data from the JSON object.
      */
-    public static ConstructionProgress fromJSON(org.json.JSONObject json) {
+    public static ConstructionProgress deserialize(org.json.JSONObject json) {
         String id = json.optString("id", null);
         Number fomorianProgress = json.optNumber("fomorianProgress", -1);
         Number razorbackProgress = json.optNumber("razorbackProgress", -1);
 
         return new ConstructionProgress(id, fomorianProgress, razorbackProgress);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("fomorianProgress", fomorianProgress != null ? fomorianProgress : JSONObject.NULL);
+        json.put("razorbackProgress", razorbackProgress != null ? razorbackProgress : JSONObject.NULL);
+        return json;
     }
 
     /**

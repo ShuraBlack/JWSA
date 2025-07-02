@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.Era;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.Faction;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.MissionType;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +21,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class Fissure {
+public class Fissure implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 5613969027172243424L;
 
     /** The unique identifier of the Fissure. */
     private final String id;
@@ -66,7 +70,7 @@ public class Fissure {
      * @param object The JSON object containing the Fissure data.
      * @return A Fissure object populated with data from the JSON object.
      */
-    public static Fissure fromJSON(JSONObject object) {
+    public static Fissure deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
@@ -82,6 +86,26 @@ public class Fissure {
         boolean hard = object.optBoolean("isHard", false);
 
         return new Fissure(id, activation, expiry, startString, active, node, expired, eta, missionType, tier, enemy, storm, hard);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("node", node != null ? node : JSONObject.NULL);
+        json.put("expired", expired);
+        json.put("eta", eta != null ? eta : JSONObject.NULL);
+        json.put("missionType", missionType != null ? missionType.toString() : JSONObject.NULL);
+        json.put("tier", tier != null ? tier.toString() : JSONObject.NULL);
+        json.put("enemy", enemy != null ? enemy.toString() : JSONObject.NULL);
+        json.put("isStorm", storm);
+        json.put("isHard", hard);
+
+        return json;
     }
 
     /**

@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.general.news;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +17,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class News {
+public class News implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 8375028764676070003L;
 
     /** The unique identifier of the news item. */
     private final String id;
@@ -56,7 +60,7 @@ public class News {
      * @param object The JSON object containing the news data.
      * @return A News object populated with data from the JSON object.
      */
-    public static News fromJSON(JSONObject object) {
+    public static News deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime date = ServerOffsetTime.of(object.optString("date", null));
         String imageLink = object.optString("imageLink", null);
@@ -70,6 +74,23 @@ public class News {
         boolean priority = object.optBoolean("priority", false);
 
         return new News(id, date, imageLink, eta, primeAccess, stream, link, update, asString, message, priority);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id == null ? JSONObject.NULL : id);
+        jsonObject.put("date", date == null ? JSONObject.NULL : date.toString());
+        jsonObject.put("imageLink", imageLink == null ? JSONObject.NULL : imageLink);
+        jsonObject.put("eta", eta == null ? JSONObject.NULL : eta);
+        jsonObject.put("primeAccess", primeAccess);
+        jsonObject.put("stream", stream);
+        jsonObject.put("link", link == null ? JSONObject.NULL : link);
+        jsonObject.put("update", update);
+        jsonObject.put("asString", asString == null ? JSONObject.NULL : asString);
+        jsonObject.put("message", message == null ? JSONObject.NULL : message);
+        jsonObject.put("priority", priority);
+        return jsonObject;
     }
 
     /**

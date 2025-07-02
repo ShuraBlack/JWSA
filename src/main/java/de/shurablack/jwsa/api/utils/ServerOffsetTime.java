@@ -1,6 +1,7 @@
 package de.shurablack.jwsa.api.utils;
 
 import java.time.*;
+import java.time.format.DateTimeParseException;
 
 /**
  * Utility class for converting server-provided timestamps into local date-time representations.
@@ -21,9 +22,13 @@ public class ServerOffsetTime {
             return null;
         }
 
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(stamp);
-        ZonedDateTime zonedDateTime = offsetDateTime.atZoneSameInstant(ZoneId.systemDefault());
-        return zonedDateTime.toLocalDateTime();
+        try {
+            return LocalDateTime.parse(stamp);
+        } catch (DateTimeParseException e) {
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(stamp);
+            ZonedDateTime zonedDateTime = offsetDateTime.atZoneSameInstant(ZoneId.systemDefault());
+            return zonedDateTime.toLocalDateTime();
+        }
     }
 
 }

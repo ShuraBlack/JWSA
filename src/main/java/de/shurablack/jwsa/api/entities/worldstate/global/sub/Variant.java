@@ -1,9 +1,12 @@
 package de.shurablack.jwsa.api.entities.worldstate.global.sub;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.MissionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
+
+import java.io.Serializable;
 
 /**
  * Represents a Variant in the worldstate, containing details such as the node, boss, mission type, planet,
@@ -11,7 +14,9 @@ import org.json.JSONObject;
  */
 @AllArgsConstructor
 @Getter
-public class Variant {
+public class Variant implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -1162029298995190541L;
 
     /** The node associated with this variant. */
     private final String node;
@@ -37,7 +42,7 @@ public class Variant {
      * @param object The JSON object containing the variant data.
      * @return A Variant object populated with data from the JSON object.
      */
-    public static Variant fromJSON(JSONObject object) {
+    public static Variant deserialize(JSONObject object) {
         String node = object.optString("node", null);
         String boss = object.optString("boss", null);
         MissionType missionType = MissionType.fromString(object.optString("missionType", null));
@@ -48,4 +53,15 @@ public class Variant {
         return new Variant(node, boss, missionType, planet, modifier, modifierDescription);
     }
 
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("node", node != null ? node : JSONObject.NULL);
+        json.put("boss", boss != null ? boss : JSONObject.NULL);
+        json.put("missionType", missionType != null ? missionType.toString() : JSONObject.NULL);
+        json.put("planet", planet != null ? planet : JSONObject.NULL);
+        json.put("modifier", modifier != null ? modifier : JSONObject.NULL);
+        json.put("modifierDescription", modifierDescription != null ? modifierDescription : JSONObject.NULL);
+        return json;
+    }
 }

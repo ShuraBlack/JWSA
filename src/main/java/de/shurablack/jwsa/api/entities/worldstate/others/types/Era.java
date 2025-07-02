@@ -3,13 +3,15 @@ package de.shurablack.jwsa.api.entities.worldstate.others.types;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * Represents an Era in the worldstate, which includes details such as its name and tier.
  * This enum provides utility methods for retrieving the tier and converting from a string representation.
  */
 @AllArgsConstructor
 @Getter
-public enum Era {
+public enum Era implements Serializable {
     /** The Lith era, representing tier 1. */
     LITH("Lith", 1),
     /** The Meso era, representing tier 2. */
@@ -22,6 +24,8 @@ public enum Era {
     REQUIEM("Requiem", 5),
     /** An unknown era, used as a fallback for unrecognized names. */
     UNKNOWN("Unknown", -1);
+
+    private static final long serialVersionUID = -1105177320460095654L;
 
     /** The name of the era. */
     private final String name;
