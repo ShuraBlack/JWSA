@@ -1,6 +1,7 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
 import de.shurablack.jwsa.api.annotation.Unstable;
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.Faction;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.MissionType;
 import de.shurablack.jwsa.api.requests.Paths;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,7 +23,9 @@ import java.util.List;
 @Unstable
 @AllArgsConstructor
 @Getter
-public class Kuva {
+public class Kuva implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 7369560755853194139L;
 
     /** The unique identifier of the Kuva Mission. */
     private final String id;
@@ -59,7 +63,7 @@ public class Kuva {
      * @param object The JSON object containing the Kuva Mission data.
      * @return A KuvaMission object populated with data from the JSON object.
      */
-    public static Kuva fromJSON(JSONObject object) {
+    public static Kuva deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime activation = LocalDateTime.parse(object.optString("activation", null));
         LocalDateTime expiry = LocalDateTime.parse(object.optString("expiry", null));
@@ -74,6 +78,22 @@ public class Kuva {
         return new Kuva(id, activation, expiry, startString, active, node, enemy, type, archwing, sharkwing);
     }
 
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("activation", activation.toString());
+        json.put("expiry", expiry.toString());
+        json.put("startString", startString);
+        json.put("active", active);
+        json.put("node", node);
+        json.put("enemy", enemy.toString());
+        json.put("type", type.toString());
+        json.put("archwing", archwing);
+        json.put("sharkwing", sharkwing);
+        return json;
+    }
+
     /**
      * Requests the list of current Kuva Missions from the server.
      *
@@ -82,5 +102,4 @@ public class Kuva {
     public static List<Kuva> request() {
         return Requests.withListMapping(Kuva.class, Paths.KUVA_MISSION);
     }
-
 }

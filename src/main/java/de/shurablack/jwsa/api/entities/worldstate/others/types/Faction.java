@@ -3,13 +3,15 @@ package de.shurablack.jwsa.api.entities.worldstate.others.types;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * Represents a Faction in the worldstate, which includes details such as its name.
  * This enum provides utility methods for retrieving the name and converting from a string representation.
  */
 @AllArgsConstructor
 @Getter
-public enum Faction {
+public enum Faction implements Serializable {
     /** The Orokin faction. */
     OROKIN("Orokin"),
     /** The Corrupted faction. */
@@ -26,6 +28,8 @@ public enum Faction {
     NARMER("Narmer"),
     /** An unknown faction, used as a fallback for unrecognized names. */
     UNKNOWN("Unknown");
+
+    private static final long serialVersionUID = 7063857228890341106L;
 
     /** The name of the faction. */
     private final String name;

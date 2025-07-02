@@ -1,11 +1,13 @@
 package de.shurablack.jwsa.api.entities.worldstate.others;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.Faction;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.MissionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +17,9 @@ import java.util.stream.Collectors;
  */
 @AllArgsConstructor
 @Getter
-public class Mission {
+public class Mission implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -7796708072113978598L;
 
     /** The reward associated with the mission. */
     private final Reward reward;
@@ -80,8 +84,8 @@ public class Mission {
      * @param object The JSON object containing the mission details.
      * @return A new Mission instance with the parsed details.
      */
-    public static Mission fromJSON(JSONObject object) {
-        Reward reward = object.has("reward") ? Reward.fromJSON(object.getJSONObject("reward")) : null;
+    public static Mission deserialize(JSONObject object) {
+        Reward reward = object.has("reward") ? Reward.deserialize(object.getJSONObject("reward")) : null;
         String node = object.optString("node", null);
         String nodeKey = object.optString("nodeKey", null);
         Faction faction = object.has("faction") ? Faction.fromString(object.getString("faction")) : Faction.UNKNOWN;
@@ -107,4 +111,29 @@ public class Mission {
                 levelAuras, description);
     }
 
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("reward", reward != null ? reward.serialize() : JSONObject.NULL);
+        json.put("node", node != null ? node : JSONObject.NULL);
+        json.put("nodeKey", nodeKey != null ? nodeKey : JSONObject.NULL);
+        json.put("faction", faction != null ? faction.toString() : JSONObject.NULL);
+        json.put("maxEnemyLevel", maxEnemyLevel != null ? maxEnemyLevel : -1);
+        json.put("minEnemyLevel", minEnemyLevel != null ? minEnemyLevel : -1);
+        json.put("maxWaveNum", maxWaveNum != null ? maxWaveNum : -1);
+        json.put("type", type != null ? type.toString() : JSONObject.NULL);
+        json.put("nightmare", nightmare);
+        json.put("archwingRequired", archwingRequired);
+        json.put("sharkwing", sharkwing);
+        json.put("enemySpec", enemySpec != null ? enemySpec : JSONObject.NULL);
+        json.put("levelOverride", levelOverride != null ? levelOverride : JSONObject.NULL);
+        json.put("advancedSpawners", advancedSpawners);
+        json.put("requiredItems", requiredItems);
+        json.put("consumeRequiredItems", consumeRequiredItems);
+        json.put("leadersAlwaysAllowed", leadersAlwaysAllowed);
+        json.put("levelAuras", levelAuras);
+        json.put("description", description != null ? description : JSONObject.NULL);
+
+        return json;
+    }
 }

@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.global.sub.InvasionParty;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.RewardTypes;
 import de.shurablack.jwsa.api.requests.Paths;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class Invasion {
+public class Invasion implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 7579048525308813472L;
 
     /** The unique identifier of the invasion. */
     private final String id;
@@ -75,17 +79,17 @@ public class Invasion {
      * @param object The JSON object containing the invasion data.
      * @return An Invasion object populated with data from the JSON object.
      */
-    public static Invasion fromJSON(JSONObject object) {
+    public static Invasion deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
         String startString = object.optString("startString", null);
         boolean active = object.optBoolean("active", false);
-        InvasionParty attacker = InvasionParty.fromJSON(object.optJSONObject("attacker", null));
+        InvasionParty attacker = InvasionParty.deserialize(object.optJSONObject("attacker", null));
         boolean completed = object.optBoolean("completed", false);
         Number completion = object.optNumber("completion", -1);
         Number count = object.optNumber("count", -1);
-        InvasionParty defender = InvasionParty.fromJSON(object.optJSONObject("defender", null));
+        InvasionParty defender = InvasionParty.deserialize(object.optJSONObject("defender", null));
         String desc = object.optString("desc", null);
         String eta = object.optString("eta", null);
         String node = object.optString("node", null);
@@ -101,6 +105,39 @@ public class Invasion {
         boolean vsInfestation = object.optBoolean("vsInfestation", false);
 
         return new Invasion(id, activation, expiry, startString, active, attacker, completed, completion, count, defender, desc, eta, node, requiredRuns, rewardTypes, vsInfestation);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("attacker", attacker != null ? attacker.serialize() : JSONObject.NULL);
+        json.put("completed", completed);
+        json.put("completion", completion != null ? completion : JSONObject.NULL);
+        json.put("count", count != null ? count : JSONObject.NULL);
+        json.put("defender", defender != null ? defender.serialize() : JSONObject.NULL);
+        json.put("desc", desc != null ? desc : JSONObject.NULL);
+        json.put("eta", eta != null ? eta : JSONObject.NULL);
+        json.put("node", node != null ? node : JSONObject.NULL);
+        json.put("requiredRuns", requiredRuns != null ? requiredRuns : JSONObject.NULL);
+
+        if (rewardTypes != null && !rewardTypes.isEmpty()) {
+            List<String> rewardTypeStrings = new ArrayList<>();
+            for (RewardTypes type : rewardTypes) {
+                rewardTypeStrings.add(type.toString());
+            }
+            json.put("rewardTypes", rewardTypeStrings);
+        } else {
+            json.put("rewardTypes", new ArrayList<>());
+        }
+
+        json.put("vsInfestation", vsInfestation);
+
+        return json;
     }
 
     /**

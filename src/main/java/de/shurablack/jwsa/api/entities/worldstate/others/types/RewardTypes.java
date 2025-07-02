@@ -3,13 +3,15 @@ package de.shurablack.jwsa.api.entities.worldstate.others.types;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * Represents the various reward types available in the worldstate.
  * Each reward type is associated with a specific name.
  */
 @AllArgsConstructor
 @Getter
-public enum RewardTypes {
+public enum RewardTypes implements Serializable {
     /** The Vauban reward type. */
     VAUBAN("vauban"),
     /** The Vandal reward type. */
@@ -98,6 +100,8 @@ public enum RewardTypes {
     CREDITS("credits"),
     /** For any reward type that is not recognized or specified. */
     UNKNOWN("unknown");
+
+    private static final long serialVersionUID = 2347782504143332038L;
 
     /** The name of the reward type. */
     private final String name;

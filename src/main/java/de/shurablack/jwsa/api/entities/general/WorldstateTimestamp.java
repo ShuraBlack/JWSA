@@ -1,11 +1,14 @@
 package de.shurablack.jwsa.api.entities.general;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +17,9 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @Getter
-public class WorldstateTimestamp {
+public class WorldstateTimestamp implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 7343950726188584610L;
 
     /** The timestamp representing a specific point in time. */
     private final LocalDateTime timestamp;
@@ -26,5 +31,12 @@ public class WorldstateTimestamp {
      */
     public static WorldstateTimestamp request() {
         return new WorldstateTimestamp(ServerOffsetTime.of(Requests.raw(Paths.TIMESTAMP).replaceAll("\"", "")));
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("timestamp", timestamp.toString());
+        return json;
     }
 }

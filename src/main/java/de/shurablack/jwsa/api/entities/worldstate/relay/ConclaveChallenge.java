@@ -1,11 +1,14 @@
 package de.shurablack.jwsa.api.entities.worldstate.relay;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +18,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class ConclaveChallenge {
+public class ConclaveChallenge implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 8818976884682598581L;
 
     /** The unique identifier of the Conclave Challenge. */
     private final String id;
@@ -59,7 +64,7 @@ public class ConclaveChallenge {
      * @param json The JSON object containing the Conclave Challenge details.
      * @return A new ConclaveChallenge instance with the parsed details.
      */
-    public static ConclaveChallenge fromJSON(org.json.JSONObject json) {
+    public static ConclaveChallenge deserialize(org.json.JSONObject json) {
         String id = json.optString("id", null);
         String mode = json.optString("mode", null);
         Number amount = json.optNumber("amount", -1);
@@ -74,6 +79,24 @@ public class ConclaveChallenge {
         boolean rootChallenge = json.optBoolean("rootChallenge", false);
 
         return new ConclaveChallenge(id, mode, amount, eta, expired, endString, daily, description, expiry, asString, category, rootChallenge);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("mode", mode != null ? mode : JSONObject.NULL);
+        json.put("amount", amount != null ? amount : JSONObject.NULL);
+        json.put("eta", eta != null ? eta : JSONObject.NULL);
+        json.put("expired", expired);
+        json.put("endString", endString != null ? endString : JSONObject.NULL);
+        json.put("daily", daily);
+        json.put("description", description != null ? description : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("asString", asString != null ? asString : JSONObject.NULL);
+        json.put("category", category != null ? category : JSONObject.NULL);
+        json.put("rootChallenge", rootChallenge);
+        return json;
     }
 
     /**

@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.relay;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,7 +18,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class DarvoDeal {
+public class DarvoDeal implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 8191060625203984693L;
 
     /** The unique identifier of the Darvo Deal. */
     private final String id;
@@ -54,7 +58,7 @@ public class DarvoDeal {
      * @param json The JSON object containing the Darvo Deal details.
      * @return A new DarvoDeal instance with the parsed details.
      */
-    public static DarvoDeal fromJSON(JSONObject json) {
+    public static DarvoDeal deserialize(JSONObject json) {
         String id = json.optString("id", null);
         Number sold = json.optNumber("sold", -1);
         String item = json.optString("item", null);
@@ -67,6 +71,22 @@ public class DarvoDeal {
         LocalDateTime expiry = ServerOffsetTime.of(json.optString("expiry", null));
 
         return new DarvoDeal(id, sold, item, uniqueName, total, eta, originalPrice, salePrice, discount, expiry);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("sold", sold != null ? sold : JSONObject.NULL);
+        json.put("item", item != null ? item : JSONObject.NULL);
+        json.put("uniqueName", uniqueName != null ? uniqueName : JSONObject.NULL);
+        json.put("total", total != null ? total : JSONObject.NULL);
+        json.put("eta", eta != null ? eta : JSONObject.NULL);
+        json.put("originalPrice", originalPrice != null ? originalPrice : JSONObject.NULL);
+        json.put("salePrice", salePrice != null ? salePrice : JSONObject.NULL);
+        json.put("discount", discount != null ? discount : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        return json;
     }
 
     /**

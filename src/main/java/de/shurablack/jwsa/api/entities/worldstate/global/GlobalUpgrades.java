@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,7 +18,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class GlobalUpgrades {
+public class GlobalUpgrades implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 1296297621135720237L;
 
     /** The start time of the global upgrade. */
     private final LocalDateTime start;
@@ -51,7 +55,7 @@ public class GlobalUpgrades {
      * @param object The JSON object containing the global upgrade data.
      * @return A GlobalUpgrades object populated with data from the JSON object.
      */
-    public static GlobalUpgrades fromJSON(JSONObject object) {
+    public static GlobalUpgrades deserialize(JSONObject object) {
         LocalDateTime start = ServerOffsetTime.of(object.optString("start", null));
         LocalDateTime end = ServerOffsetTime.of(object.optString("end", null));
         String upgrade = object.optString("upgrade", null);
@@ -65,6 +69,21 @@ public class GlobalUpgrades {
         return new GlobalUpgrades(start, end, upgrade, operation, operationSymbol, upgradeOperationValue, expired, eta, desc);
     }
 
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("start", start == null ? null : start.toString());
+        json.put("end", end == null ? null : end.toString());
+        json.put("upgrade", upgrade);
+        json.put("operation", operation);
+        json.put("operationSymbol", operationSymbol);
+        json.put("upgradeOperationValue", upgradeOperationValue);
+        json.put("expired", expired);
+        json.put("eta", eta);
+        json.put("desc", desc);
+        return json;
+    }
+
     /**
      * Requests the list of current global upgrades from the server.
      *
@@ -73,5 +92,4 @@ public class GlobalUpgrades {
     public static List<GlobalUpgrades> request() {
         return Requests.withListMapping(GlobalUpgrades.class, Paths.GLOBAL_UPGRADES);
     }
-
 }

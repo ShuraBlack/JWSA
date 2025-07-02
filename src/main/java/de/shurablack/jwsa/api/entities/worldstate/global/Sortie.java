@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.global.sub.Variant;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.Faction;
 import de.shurablack.jwsa.api.requests.Paths;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class Sortie {
+public class Sortie implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -8058115596506760118L;
 
     /** The unique identifier of the Sortie. */
     private final String id;
@@ -60,7 +64,7 @@ public class Sortie {
      * @param object The JSON object containing the Sortie data.
      * @return A Sortie object populated with data from the JSON object.
      */
-    public static Sortie fromJSON(JSONObject object) {
+    public static Sortie deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
@@ -70,7 +74,7 @@ public class Sortie {
         List<Variant> variants = new ArrayList<>();
         if (object.has("variants")) {
             for (Object variantObj : object.getJSONArray("variants")) {
-                variants.add(Variant.fromJSON((JSONObject) variantObj));
+                variants.add(Variant.deserialize((JSONObject) variantObj));
             }
         }
         String boss = object.optString("boss", null);
@@ -79,6 +83,34 @@ public class Sortie {
         String eta = object.optString("eta", null);
 
         return new Sortie(id, activation, expiry, startString, active, rewardPool, variants, boss, faction, expired, eta);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("rewardPool", rewardPool != null ? rewardPool : JSONObject.NULL);
+
+        if (variants != null) {
+            List<JSONObject> variantJsons = new ArrayList<>();
+            for (Variant variant : variants) {
+                variantJsons.add(variant.serialize());
+            }
+            json.put("variants", variantJsons);
+        } else {
+            json.put("variants", new ArrayList<>());
+        }
+
+        json.put("boss", boss != null ? boss : JSONObject.NULL);
+        json.put("faction", faction != null ? faction.toString() : JSONObject.NULL);
+        json.put("expired", expired);
+        json.put("eta", eta != null ? eta : JSONObject.NULL);
+
+        return json;
     }
 
     /**

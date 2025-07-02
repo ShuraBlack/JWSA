@@ -1,6 +1,7 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
 import de.shurablack.jwsa.api.annotation.Unstable;
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.Faction;
 import de.shurablack.jwsa.api.entities.worldstate.others.types.MissionType;
 import de.shurablack.jwsa.api.requests.Paths;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -21,7 +23,9 @@ import java.time.LocalDateTime;
 @Unstable
 @AllArgsConstructor
 @Getter
-public class Arbitration {
+public class Arbitration implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -8475766480607519309L;
 
     /** The unique identifier of the Arbitration. */
     private final String id;
@@ -59,7 +63,7 @@ public class Arbitration {
      * @param json The JSON object containing the Arbitration data.
      * @return An Arbitration object populated with data from the JSON object.
      */
-    public static Arbitration fromJSON(JSONObject json) {
+    public static Arbitration deserialize(JSONObject json) {
         String id = json.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(json.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(json.optString("expiry", null));
@@ -72,6 +76,22 @@ public class Arbitration {
         boolean sharkwing = json.optBoolean("sharkwing", false);
 
         return new Arbitration(id, activation, expiry, startString, active, node, faction, type, archwing, sharkwing);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("node", node != null ? node : JSONObject.NULL);
+        json.put("enemy", faction != null ? faction.toString() : JSONObject.NULL);
+        json.put("type", type != null ? type.toString() : JSONObject.NULL);
+        json.put("archwing", archwing);
+        json.put("sharkwing", sharkwing);
+        return json;
     }
 
     /**

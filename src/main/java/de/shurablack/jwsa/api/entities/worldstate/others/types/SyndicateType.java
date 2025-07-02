@@ -3,13 +3,15 @@ package de.shurablack.jwsa.api.entities.worldstate.others.types;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * Represents the various Syndicate types available in the worldstate.
  * Each Syndicate type is associated with a specific name.
  */
 @AllArgsConstructor
 @Getter
-public enum SyndicateType {
+public enum SyndicateType implements Serializable {
     /** The Arbiters of Hexis Syndicate. */
     ARBITERS_OF_HEXIS("Arbiters of Hexis"),
     /** The Cephalon Suda Syndicate. */
@@ -34,6 +36,8 @@ public enum SyndicateType {
     NEW_LOKA("New Loka"),
     /** An unknown Syndicate, used as a fallback for unrecognized names. */
     UNKNOWN("Unknown");
+
+    private static final long serialVersionUID = 3308965940726681533L;
 
     /** The name of the Syndicate type. */
     private final String name;

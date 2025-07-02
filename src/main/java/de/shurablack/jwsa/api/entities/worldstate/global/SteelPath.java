@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.global.sub.Incursions;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,9 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class SteelPath {
+public class SteelPath implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = -6935127185215539705L;
 
     /** The activation time of the Steel Path. */
     private final LocalDateTime activation;
@@ -47,26 +51,55 @@ public class SteelPath {
      * @param object The JSON object containing the Steel Path data.
      * @return A SteelPath object populated with data from the JSON object.
      */
-    public static SteelPath fromJSON(JSONObject object) {
+    public static SteelPath deserialize(JSONObject object) {
         LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
-        SingleMap currentRewardObj = SingleMap.fromJSON(object.optJSONObject("currentReward", null));
+        SingleMap currentRewardObj = SingleMap.deserialize(object.optJSONObject("currentReward", null));
         String remaining = object.optString("remaining", null);
         List<SingleMap> rotation = new ArrayList<>();
         if (object.has("rotation")) {
             for (Object rotationObj : object.getJSONArray("rotation")) {
-                rotation.add(SingleMap.fromJSON((JSONObject) rotationObj));
+                rotation.add(SingleMap.deserialize((JSONObject) rotationObj));
             }
         }
         List<SingleMap> evergreens = new ArrayList<>();
         if (object.has("evergreens")) {
             for (Object evergreenObj : object.getJSONArray("evergreens")) {
-                evergreens.add(SingleMap.fromJSON((JSONObject) evergreenObj));
+                evergreens.add(SingleMap.deserialize((JSONObject) evergreenObj));
             }
         }
-        Incursions incursions = Incursions.fromJSON(object.optJSONObject("incursions", null));
+        Incursions incursions = Incursions.deserialize(object.optJSONObject("incursions", null));
 
         return new SteelPath(activation, expiry, currentRewardObj, remaining, rotation, evergreens, incursions);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("activation", activation == null ? null : activation.toString());
+        json.put("expiry", expiry == null ? null : expiry.toString());
+        json.put("currentReward", currentReward == null ? null : currentReward.serialize());
+        json.put("remaining", remaining);
+
+        if (rotation != null) {
+            List<JSONObject> rotationJson = new ArrayList<>();
+            for (SingleMap map : rotation) {
+                rotationJson.add(map.serialize());
+            }
+            json.put("rotation", rotationJson);
+        }
+
+        if (evergreens != null) {
+            List<JSONObject> evergreensJson = new ArrayList<>();
+            for (SingleMap map : evergreens) {
+                evergreensJson.add(map.serialize());
+            }
+            json.put("evergreens", evergreensJson);
+        }
+
+        json.put("incursions", incursions == null ? null : incursions.serialize());
+
+        return json;
     }
 
     /**
@@ -83,7 +116,9 @@ public class SteelPath {
      */
     @AllArgsConstructor
     @Getter
-    public static class SingleMap {
+    public static class SingleMap implements Serializable, IJsonMapping {
+
+        private static final long serialVersionUID = 5909150833664493564L;
 
         /** The name of the reward or map. */
         private final String name;
@@ -97,7 +132,7 @@ public class SteelPath {
          * @param json The JSON object containing the SingleMap data.
          * @return A SingleMap object populated with data from the JSON object.
          */
-        public static SingleMap fromJSON(JSONObject json) {
+        public static SingleMap deserialize(JSONObject json) {
             if (json == null) {
                 return new SingleMap(null, null);
             }
@@ -106,6 +141,14 @@ public class SteelPath {
             String cost = json.optString("cost", null);
 
             return new SingleMap(name, cost);
+        }
+
+        @Override
+        public JSONObject serialize() {
+            JSONObject json = new JSONObject();
+            json.put("name", name != null ? name : JSONObject.NULL);
+            json.put("cost", cost != null ? cost : JSONObject.NULL);
+            return json;
         }
     }
 }

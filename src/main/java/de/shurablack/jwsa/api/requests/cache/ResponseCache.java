@@ -3,6 +3,7 @@ package de.shurablack.jwsa.api.requests.cache;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,7 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * A utility class for caching HTTP response data associated with requested URLs.
  * Provides methods to store, retrieve, and update cached responses.
  */
-public class ResponseCache {
+public class ResponseCache implements Serializable {
+
+    private static final long serialVersionUID = -1121615555295222053L;
 
     /**
      * A thread-safe map that stores the requested URL as the key and its associated

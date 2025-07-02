@@ -1,5 +1,6 @@
 package de.shurablack.jwsa.api.entities.worldstate.global;
 
+import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.entities.worldstate.global.sub.InterimSteps;
 import de.shurablack.jwsa.api.entities.worldstate.others.Job;
 import de.shurablack.jwsa.api.entities.worldstate.global.sub.ProgressionStep;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,9 @@ import java.util.stream.Collectors;
  */
 @AllArgsConstructor
 @Getter
-public class Event {
+public class Event implements Serializable, IJsonMapping {
+
+    private static final long serialVersionUID = 6497712314404948857L;
 
     /** The unique identifier of the event. */
     private final String id;
@@ -135,7 +139,7 @@ public class Event {
      * @param object The JSON object containing the event data.
      * @return An Event object populated with data from the JSON object.
      */
-    public static Event fromJSON(JSONObject object) {
+    public static Event deserialize(JSONObject object) {
         String id = object.optString("id", null);
         LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
         LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
@@ -157,7 +161,7 @@ public class Event {
         List<Reward> rewards = new ArrayList<>();
         if (object.has("rewards")) {
             for (Object rewardObj : object.getJSONArray("rewards")) {
-                rewards.add(Reward.fromJSON((JSONObject) rewardObj));
+                rewards.add(Reward.deserialize((JSONObject) rewardObj));
             }
         }
         Number health = object.optNumber("health", -1);
@@ -165,14 +169,14 @@ public class Event {
         List<Job> jobs = new ArrayList<>();
         if (object.has("jobs")) {
             for (Object jobObj : object.getJSONArray("jobs")) {
-                jobs.add(Job.fromJSON((JSONObject) jobObj));
+                jobs.add(Job.deserialize((JSONObject) jobObj));
             }
         }
-        InterimSteps interimSteps = InterimSteps.fromJSON(object.optJSONObject("interimSteps", null));
+        InterimSteps interimSteps = InterimSteps.deserialize(object.optJSONObject("interimSteps", null));
         List<ProgressionStep> progressionSteps = new ArrayList<>();
         if (object.has("progressionSteps")) {
             for (Object stepObj : object.getJSONArray("progressionSteps")) {
-                progressionSteps.add(ProgressionStep.fromJSON((JSONObject) stepObj));
+                progressionSteps.add(ProgressionStep.deserialize((JSONObject) stepObj));
             }
         }
         Number progressTotal = object.optNumber("progressTotal", -1);
@@ -189,7 +193,7 @@ public class Event {
         String scoreVar = object.optString("scoreVar", null);
         LocalDateTime altExpiry = object.has("altExpiry") ? ServerOffsetTime.of(object.getString("altExpiry")) : null;
         LocalDateTime altActivation = object.has("altActivation") ? ServerOffsetTime.of(object.getString("altActivation")) : null;
-        Alt nextAlt = object.has("nextAlt") ? Alt.fromJSON(object.getJSONObject("nextAlt")) : null;
+        Alt nextAlt = object.has("nextAlt") ? Alt.deserialize(object.getJSONObject("nextAlt")) : null;
         String tag = object.optString("tag", null);
 
         return new Event(id, activation, expiry, startString, active, maximumScore, currentScore, smallInterval,
@@ -197,6 +201,81 @@ public class Event {
                 rewards, health, affiliatedWith, jobs, interimSteps, progressionSteps, progressTotal,
                 showTotalAtEndOfMission, personal, community, regionDrops, asString,
                 completionBonuses, scoreVar, altExpiry, altActivation, nextAlt, tag);
+    }
+
+    @Override
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+        json.put("id", id != null ? id : JSONObject.NULL);
+        json.put("activation", activation != null ? activation.toString() : JSONObject.NULL);
+        json.put("expiry", expiry != null ? expiry.toString() : JSONObject.NULL);
+        json.put("startString", startString != null ? startString : JSONObject.NULL);
+        json.put("active", active);
+        json.put("maximumScore", maximumScore != null ? maximumScore : -1);
+        json.put("currentScore", currentScore != null ? currentScore : -1);
+        json.put("smallInterval", smallInterval != null ? smallInterval : -1);
+        json.put("largeInterval", largeInterval != null ? largeInterval : -1);
+        json.put("faction", faction != null ? faction.toString() : JSONObject.NULL);
+        json.put("description", description != null ? description : JSONObject.NULL);
+        json.put("tooltip", tooltip != null ? tooltip : JSONObject.NULL);
+        json.put("node", node != null ? node : JSONObject.NULL);
+        json.put("concurrentNodes", concurrentNodes != null ? concurrentNodes : new ArrayList<>());
+        json.put("victimNode", victimNode != null ? victimNode : JSONObject.NULL);
+        json.put("scoreLocTag", scoreLocTag != null ? scoreLocTag : JSONObject.NULL);
+
+        if (rewards != null && !rewards.isEmpty()) {
+            List<JSONObject> rewardsJson = rewards.stream()
+                    .map(Reward::serialize)
+                    .collect(Collectors.toList());
+            json.put("rewards", rewardsJson);
+        } else {
+            json.put("rewards", new ArrayList<>());
+        }
+
+        json.put("health", health != null ? health : -1);
+        json.put("affiliatedWith", affiliatedWith != null ? affiliatedWith.toString() : JSONObject.NULL);
+
+        if (jobs != null && !jobs.isEmpty()) {
+            List<JSONObject> jobsJson = jobs.stream()
+                    .map(Job::serialize)
+                    .collect(Collectors.toList());
+            json.put("jobs", jobsJson);
+        } else {
+            json.put("jobs", new ArrayList<>());
+        }
+
+        if (interimSteps != null) {
+            json.put("interimSteps", interimSteps.serialize());
+        } else {
+            json.put("interimSteps", JSONObject.NULL);
+        }
+
+        if (progressionSteps != null && !progressionSteps.isEmpty()) {
+            List<JSONObject> progressionStepsJson = progressionSteps.stream()
+                    .map(ProgressionStep::serialize)
+                    .collect(Collectors.toList());
+            json.put("progressionSteps", progressionStepsJson);
+        } else {
+            json.put("progressionSteps", new ArrayList<>());
+        }
+        json.put("progressTotal", progressTotal != null ? progressTotal : -1);
+        json.put("showTotalAtEndOfMission", showTotalAtEndOfMission);
+        json.put("isPersonal", personal);
+        json.put("isCommunity", community);
+        json.put("regionDrops", regionDrops != null ? regionDrops : new ArrayList<>());
+        json.put("asString", asString != null ? asString : JSONObject.NULL);
+        json.put("completionBonuses", completionBonuses != null ? completionBonuses : new ArrayList<>());
+        json.put("scoreVar", scoreVar != null ? scoreVar : JSONObject.NULL);
+        json.put("altExpiry", altExpiry != null ? altExpiry.toString() : JSONObject.NULL);
+        json.put("altActivation", altActivation != null ? altActivation.toString() : JSONObject.NULL);
+        if (nextAlt != null) {
+            json.put("nextAlt", nextAlt.serialize());
+        } else {
+            json.put("nextAlt", JSONObject.NULL);
+        }
+        json.put("tag", tag != null ? tag : JSONObject.NULL);
+
+        return json;
     }
 
     /**
