@@ -3,9 +3,9 @@
 [License]: https://img.shields.io/badge/License-MIT-white?style=for-the-badge
 [Version]: https://img.shields.io/badge/Version-1.0.0-green?style=for-the-badge
 
-<img align="right" style="margin-top: 15px" src="" height="150" width="150">
-
 # 🚀 JWSA (Java Warframe Stat API)
+
+<img align="right" src="https://github.com/user-attachments/assets/e93c8e76-d636-470f-9b81-0e752c7b67e3" height="150" width="150">
 
 [![Java][]][Java]
 [![API][]][API]
