@@ -1,0 +1,75 @@
+package de.shurablack.jwsa.api.entities.worldstate.planet;
+
+import de.shurablack.jwsa.api.entities.worldstate.planet.sub.ArchimedeaMission;
+import de.shurablack.jwsa.api.entities.worldstate.planet.sub.PersonalModifier;
+import de.shurablack.jwsa.api.requests.Paths;
+import de.shurablack.jwsa.api.requests.Requests;
+import de.shurablack.jwsa.api.utils.ServerOffsetTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.json.JSONObject;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents the Deep Archimedea status in the worldstate, containing details such as activation time,
+ * expiry time, associated missions, and personal modifiers.
+ */
+@AllArgsConstructor
+@Getter
+public class DeepArchimedea {
+
+    /** The unique identifier of the Deep Archimedea status. */
+    private final String id;
+
+    /** The activation time of the Deep Archimedea status. */
+    private final LocalDateTime activation;
+
+    /** The expiry time of the Deep Archimedea status. */
+    private final LocalDateTime expiry;
+
+    /** The list of missions associated with the Deep Archimedea status. */
+    private final List<ArchimedeaMission> missions;
+
+    /** The list of personal modifiers associated with the Deep Archimedea status. */
+    private final List<PersonalModifier> personalModifiers;
+
+    /**
+     * Creates a DeepArchimedea instance from a JSON object.
+     *
+     * @param object The JSON object containing the Deep Archimedea details.
+     * @return A new DeepArchimedea instance with the parsed details.
+     */
+    public static DeepArchimedea fromJSON(JSONObject object) {
+        String id = object.optString("id", null);
+        LocalDateTime activation = ServerOffsetTime.of(object.optString("activation", null));
+        LocalDateTime expiry = ServerOffsetTime.of(object.optString("expiry", null));
+
+        List<ArchimedeaMission> missions = new ArrayList<>();
+        if (object.has("missions")) {
+            for (Object missionObj : object.getJSONArray("missions")) {
+                missions.add(ArchimedeaMission.fromJSON((JSONObject) missionObj));
+            }
+        }
+
+        List<PersonalModifier> personalModifiers = new ArrayList<>();
+        if (object.has("personalModifiers")) {
+            for (Object modifierObj : object.getJSONArray("personalModifiers")) {
+                personalModifiers.add(PersonalModifier.fromJSON((JSONObject) modifierObj));
+            }
+        }
+
+        return new DeepArchimedea(id, activation, expiry, missions, personalModifiers);
+    }
+
+    /**
+     * Requests the DeepArchimedea status from the server.
+     *
+     * @return A DeepArchimedea instance retrieved from the server.
+     */
+    public static DeepArchimedea request() {
+        return Requests.withDirectMapping(DeepArchimedea.class, Paths.DEEP_ARCHIMEDEA);
+    }
+}
