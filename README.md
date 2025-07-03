@@ -69,6 +69,7 @@ public class Main {
       for (Alert alert : alerts) {
          System.out.println("Alert Node: " + alert.getMission().getNode());
          System.out.println("Reward: " + alert.getMission().getReward().getAsString());
+         ...
       }
    }
 }
@@ -85,6 +86,7 @@ public class Main {
       Sortie sortie = Sortie.request();
       System.out.println("Sortie Boss: " + sortie.getBoss());
       System.out.println("Faction: " + sortie.getFaction().getName());
+      ...
 
       // Save sortie data to a JSON file
       Persistence.jsonMapToFile(sortie, "sortie.json");
@@ -92,6 +94,30 @@ public class Main {
       // Load sortie data from a JSON file
       Sortie loadedSortie = Sortie.deserialize(Persistence.readJsonFromFile("sortie.json"));
    }
+}
+```
+
+### Example: Fetching Warframe
+> The Query uses a best match approach, so you can use any part of the name.
+
+```java
+import de.shurablack.jwsa.api.entities.searchable.weapon.Weapon;
+
+public class Main {
+  public static void main(String[] args) {
+    // This will return all variants of the weapon "Ignis"
+    List<Weapon> weapon = Weapon.requestAll("Ignis");
+        
+    if (weapon.isEmpty()) {
+        System.out.println("No weapon found with that name.");
+    } else {
+        Weapon ignis = weapon.get(0); // Get the first match
+        System.out.println("Weapon Name: " + ignis.getName());
+        System.out.println("Type: " + ignis.getType());
+        System.out.println("Mastery Rank: " + ignis.getMasteryRank());
+        ...
+    }
+  }
 }
 ```
 
