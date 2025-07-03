@@ -6,6 +6,7 @@ import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.Persistence;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class CambionStatus implements Serializable, IJsonMapping {
 
     private static final long serialVersionUID = -6307391587615496345L;

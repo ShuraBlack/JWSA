@@ -7,6 +7,7 @@ import de.shurablack.jwsa.api.entities.worldstate.others.types.MissionType;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @Unstable
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class Kuva implements Serializable, IJsonMapping {
 
     private static final long serialVersionUID = 7369560755853194139L;

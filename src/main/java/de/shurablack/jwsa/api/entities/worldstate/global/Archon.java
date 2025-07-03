@@ -7,6 +7,7 @@ import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import de.shurablack.jwsa.api.utils.ServerOffsetTime;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class Archon implements Serializable, IJsonMapping {
 
     private static final long serialVersionUID = -8254135237592240135L;

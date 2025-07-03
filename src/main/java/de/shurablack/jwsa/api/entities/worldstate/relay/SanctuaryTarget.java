@@ -4,6 +4,7 @@ import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -15,6 +16,7 @@ import java.io.Serializable;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class SanctuaryTarget implements Serializable, IJsonMapping {
 
     private static final long serialVersionUID = 604370248067586163L;

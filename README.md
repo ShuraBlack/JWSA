@@ -1,7 +1,7 @@
-[Java]: https://img.shields.io/badge/Java-rgb(235%2C%20149%2C%2042)?style=for-the-badge
+[Java]: https://img.shields.io/badge/Java%2011-rgb(235%2C%20149%2C%2042)?style=for-the-badge
 [API]: https://img.shields.io/badge/API-Wrapper-blue?style=for-the-badge
 [License]: https://img.shields.io/badge/License-MIT-white?style=for-the-badge
-[Version]: https://img.shields.io/badge/Version-1.0.0-green?style=for-the-badge
+[Version]: https://img.shields.io/maven-central/v/io.github.shurablack/JWSA?strategy=highestVersion&style=for-the-badge&color=green
 [Discord]: https://img.shields.io/badge/Discord-shurablack-rgb(2%2C%20187%2C%20249)?style=for-the-badge&logo=discord&logoColor=rgb(2%2C%20187%2C%20249)
 
 # 🚀 JWSA (Java Warframe Stat API)
@@ -27,19 +27,27 @@
 
 ## 🔧 Installation
 
-1. 📥 Clone the repository:
-   ```bash
-   git clone https://github.com/ShuraBlack/JWSA.git
-   cd JWSA
-   ```
+This libary is available on maven central. The latest version is always shown in the [GitHub Release](https://github.com/ShuraBlack/JWSA/releases).<br>
+The minimum java version supported is **Java 11**.
+### Gradle
+```gradle
+repositories {
+    mavenCentral()
+}
 
-2. 🛠️ Build the project with Maven:
-   ```bash
-   mvn clean install
-   ```
+dependencies {
+    implementation 'io.github.shurablack:JWSA:$version'
+}
+```
 
-3. 📦 Add the generated JAR to your project  
-   _(or use the prebuilt release .jar / include the github release)_
+### Maven
+```xml
+<dependency>
+    <groupId>io.github.shurablack</groupId>
+    <artifactId>JWSA</artifactId>
+    <version>$version</version>
+</dependency>
+```
 
 ## 🧪 Usage
 
