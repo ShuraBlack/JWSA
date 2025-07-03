@@ -6,6 +6,8 @@ package de.shurablack.jwsa.api.requests;
  */
 public class Paths {
 
+    // Worldstate ------------------------------------------------------------------------------------------------------
+
     /** The base URL for the Warframe API. */
     private static final String BASE_URL = "https://api.warframestat.us";
 
@@ -92,4 +94,24 @@ public class Paths {
 
     /** Endpoint for retrieving Void Trader data. */
     public static final String VOID_TRADER = WORLD_STATE + "voidTrader/?language=en";
+
+    // Searchable ------------------------------------------------------------------------------------------------------
+
+    public static final String SEARCH_DROP = BASE_URL + "/drops/search/%s/?language=en";
+
+    public static final String CLOSEST_ITEM = BASE_URL + "/items/%s/?language=en";
+
+    public static final String SEARCH_CLOSEST_ITEMS = BASE_URL + "/items/search/%s/?language=en";
+
+    public static final String CLOSEST_MOD = BASE_URL + "/mods/%s/?language=en";
+
+    public static final String SEARCH_CLOSEST_MODS = BASE_URL + "/mods/search/%s/?language=en";
+
+    public static final String CLOSEST_WARFRAME = BASE_URL + "/warframes/%s/?language=en";
+
+    public static final String SEARCH_CLOSEST_WARFRAMES = BASE_URL + "/warframes/search/%s/?language=en";
+
+    public static final String CLOSEST_WEAPON = BASE_URL + "/weapons/%s/?language=en";
+
+    public static final String SEARCH_CLOSEST_WEAPONS = BASE_URL + "/weapons/search/%s/?language=en";
 }

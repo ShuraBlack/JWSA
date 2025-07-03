@@ -18,9 +18,9 @@
 
 ## ✨ Features
 
-- 🔄 Fetch real-time data from the Warframe Worldstate API
+- 🔄 Fetch real-time data from the Warframe Worldstate API or the static Endpoints
 - 🧱 Object-oriented representation of Warframe’s game data
-- ⚡ Easy-to-use `request()` methods to retrieve data *(Caches requests to reduce calls)*
+- ⚡ Easy-to-use `request()` and `request(<query>) / requestAll(<query>)` methods to retrieve data *(Caches requests to reduce calls)*
   - Be responsible with your API usage. The endpoints do not have a rate limit
 - 💾 Save and load data from local files for offline access *(Java Serializable and Json)*
 - 🔍 Support for various game features like alerts, sorties, fissures, syndicates, and more
@@ -130,6 +130,16 @@ These classes come with built-in `request()` methods to fetch specific types of 
 - `SanctuaryTarget` — Sanctuary target data
 - `VaultTrader` — Vault trader state
 - `VoidTrader` — Baro Ki'Teer details
+
+### 🪛 Items & mods [STATIC]
+- `Item` — General item data
+- `Mod` — Mod data
+
+### 🔫 Weapon [STATIC]
+- `Weapon` — Detailed weapon information
+
+### 🤖 Warframe [STATIC]
+- `Warframe` — Detailed Warframe information
 
 ## 📦 Dependencies
 
