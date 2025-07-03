@@ -2,6 +2,7 @@
 [API]: https://img.shields.io/badge/API-Wrapper-blue?style=for-the-badge
 [License]: https://img.shields.io/badge/License-MIT-white?style=for-the-badge
 [Version]: https://img.shields.io/badge/Version-1.0.0-green?style=for-the-badge
+[Discord]: https://img.shields.io/badge/Discord-shurablack-rgb(2%2C%20187%2C%20249)?style=for-the-badge&logo=discord&logoColor=rgb(2%2C%20187%2C%20249)
 
 # 🚀 JWSA (Java Warframe Stat API)
 
@@ -11,6 +12,7 @@
 [![API][]][API]
 [![License][]][License]
 [![Version][]][Version]
+[![Discord][]][Discord]
 
 **JWSA** is a Java-based API wrapper designed to interact with the [Warframe Worldstate API](https://docs.warframestat.us/). It provides an elegant, object-oriented interface to access live game data such as alerts, missions, events, and much more.
 
@@ -132,6 +134,7 @@ These classes come with built-in `request()` methods to fetch specific types of 
 
 Contributions are welcome! 🙌  
 Feel free to open issues, request features, or submit pull requests to improve the project.
+> You can also add me on discord and chat with me if you need help ([shurablack](https://discord.com/users/286628057551208450))
 
 ## 📜 License
 
