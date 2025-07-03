@@ -38,6 +38,7 @@ public class ResponseCache implements Serializable {
      *
      * @param url  The URL whose response data is to be cached.
      * @param data The response data to be cached.
+     * @param eTag The ETag value associated with the response data.
      */
     public void put(final String url, final String data, final String eTag) {
         cache.put(url, new CacheEntry(eTag, data));
@@ -50,6 +51,7 @@ public class ResponseCache implements Serializable {
      *
      * @param url  The URL whose cached response data is to be updated.
      * @param data The new response data to be cached.
+     * @param eTag The new ETag value to be cached.
      */
     public void update(final String url, final String data, final String eTag) {
         CacheEntry entry = cache.get(url);
@@ -77,6 +79,7 @@ public class ResponseCache implements Serializable {
          * Updates the response data and refreshes the last access time for this cache entry.
          *
          * @param data The new response data to be stored in this cache entry.
+         * @param eTag The new ETag value to be stored in this cache entry.
          */
         public void update(String data, String eTag) {
             this.data = data;

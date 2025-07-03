@@ -4,6 +4,7 @@ import de.shurablack.jwsa.api.entities.IJsonMapping;
 import de.shurablack.jwsa.api.requests.Paths;
 import de.shurablack.jwsa.api.requests.Requests;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -16,6 +17,7 @@ import java.io.Serializable;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class ConstructionProgress implements Serializable, IJsonMapping {
 
     private static final long serialVersionUID = -5310155051652426558L;
